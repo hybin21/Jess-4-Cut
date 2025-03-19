@@ -6,7 +6,7 @@ import PhotoGenerate from "./components/PhotoGenerate.jsx";
 
 const App = () => {
     return (
-        <Router basename="/">
+        <Router basename="/Jess-4-Cut">
             <Routes>
                 <Route path = "/" element = {<Main/>}/>
                 <Route path = "/photo" element = {<PhotoGenerate/>}/>
