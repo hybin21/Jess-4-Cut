@@ -2,7 +2,9 @@ import React, {useEffect, useRef, useState} from "react";
 import Webcam from "react-webcam";
 import LoadingScreen from "./LoadingScreen.jsx";
 import {useNavigate} from "react-router-dom";
-import CameraSound from "/camera-capture-sound.mp3";
+import CameraClick from "/camera-capture-sound.mp3";
+import CameraCounter from "/camera-counter.mp3";
+import CameraPrint from "/camera-print.mp3";
 
 const PhotoGenerate = () => {
     const webcamRef = useRef(null);
@@ -25,6 +27,8 @@ const PhotoGenerate = () => {
         { name:'Yellow', src: 'yellow-bg.png', color: '#E4DAA6' ,logo:'jess-4-cut-yellow-logo.png', background:'#827c5e'},
         { name:'Black', src: 'black-bg.png', color: '#000000' ,logo:'jess-4-cut-black-logo.png', background:'#292929'},
     ];
+
+    const COUNTDOWN = 5;
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const handleFrameChange = (color, src, logo, bg) => {
@@ -75,30 +79,29 @@ const PhotoGenerate = () => {
         saturate(${filterValues.saturate}%)
         hue-rotate(${filterValues.hueRotate}deg)
     `;
-    const playSound = () => {
-        const clickSound =  new Audio(CameraSound);
-        clickSound.play();
+    const playSound = (audio) => {
+        const sound =  new Audio(audio);
+        sound.play();
     }
     const handleCapture = () => {
-        if (capturedImages.length < 4 && !isTakingPhoto) {
+        if (capturedImages.length < 4  && !isTakingPhoto) {
             setIsTakingPhoto(true);
-            setCountdown(3);
-
-            // play the camera click sound
-
-
-            let counter = 3;
+            setCountdown(COUNTDOWN);
+            playSound(CameraCounter);
+            let counter = COUNTDOWN;
             const interval = setInterval(() => {
                 counter -= 1;
                 setCountdown(counter);
                 if (counter === 0) {
                     clearInterval(interval);
-                    playSound();
+                    playSound(CameraClick);
                     const imageSrc = webcamRef.current.getScreenshot();
                     setCapturedImages([...capturedImages, imageSrc]);
                     setIsTakingPhoto(false);
-
                 }
+                else
+                    playSound(CameraCounter);
+
             }, 1000);
         } else {
             alert("You have already taken 4 photos!");
@@ -107,7 +110,7 @@ const PhotoGenerate = () => {
 
     const handleDownload = () => {
         setIsLoading(true); // Show the loading screen when the download starts
-
+        playSound(CameraPrint);
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         canvas.width = 750;
