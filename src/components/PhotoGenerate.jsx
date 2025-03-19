@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import Webcam from "react-webcam";
 import LoadingScreen from "./LoadingScreen.jsx";
 import {useNavigate} from "react-router-dom";
+import CameraSound from "/camera-capture-sound.mp3";
 
 const PhotoGenerate = () => {
     const webcamRef = useRef(null);
@@ -74,22 +75,29 @@ const PhotoGenerate = () => {
         saturate(${filterValues.saturate}%)
         hue-rotate(${filterValues.hueRotate}deg)
     `;
-
+    const playSound = () => {
+        const clickSound =  new Audio(CameraSound);
+        clickSound.play();
+    }
     const handleCapture = () => {
         if (capturedImages.length < 4 && !isTakingPhoto) {
             setIsTakingPhoto(true);
             setCountdown(3);
 
+            // play the camera click sound
+
+
             let counter = 3;
             const interval = setInterval(() => {
                 counter -= 1;
                 setCountdown(counter);
-
                 if (counter === 0) {
                     clearInterval(interval);
+                    playSound();
                     const imageSrc = webcamRef.current.getScreenshot();
                     setCapturedImages([...capturedImages, imageSrc]);
                     setIsTakingPhoto(false);
+
                 }
             }, 1000);
         } else {
